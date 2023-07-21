@@ -35,7 +35,10 @@ const totalEgresos = () => {
 
 const formatoMoneda = (valor) => {
     let valorFormateado = valor.toLocaleString("es-MX", { style: "currency", currency: "MXN", minimumFractionDigits: "2" });
-    return (valorFormateado +" MXN").substring(1);
+    if(valor>=0)
+        return (valorFormateado +" MXN").substring(1);
+    else
+        return ("-" + valorFormateado.substring(2) +" MXN");
 }
 
 const formatoPorcentaje = (valor) => {
@@ -64,7 +67,7 @@ const crearIngresoHTML = (ingreso) => {
                 <div class="elemento limpiarEstilos">
                     <div class="elemento_descripcion">${ingreso.descripcion}</div>
                     <div class="derecha limpiarEstilos">
-                        <div class="elemento_valor">${formatoMoneda(ingreso.valor)}</div>
+                        <div class="elemento_valor">${"+ " + formatoMoneda(ingreso.valor)}</div>
                         <div class="elemento_eliminar">
                             <button class="elemento_eliminar--btn" onclick="eliminarIngreso(${ingreso.id})">
                                 <ion-icon name="close-circle-outline"></ion-icon>
@@ -83,7 +86,7 @@ const crearEgresoHTML = (egreso) => {
             <div class="elemento-descripcion">
                 ${egreso.descripcion}
                 <div class="derecha limpiarEstilos">
-                    <div class="elemento_valor">${formatoMoneda(egreso.valor)}</div>
+                    <div class="elemento_valor">${"- " + formatoMoneda(egreso.valor)}</div>
                     <div class="elemento_porcentaje">${formatoPorcentaje(egreso.valor/totalEgresos())}</div>
                     <div class="elemento_eliminar">
                         <button class="elemento_eliminar--btn" onclick="eliminarEgreso(${egreso.id})">
@@ -118,7 +121,7 @@ const agregarDato = () => {
     let seleccion = forma.tipo.value;
     let descripcion = forma.descripcion.value;
     let valor = parseFloat(forma.valor.value);
-    if(descripcion!=''&&descripcion!=undefined&&descripcion!=null&&valor!=''&&valor!=undefined&&valor!=null){
+    if(descripcion!=''&&descripcion!=undefined&&descripcion!=null&&valor!=''&&valor!=undefined&&valor!=null&&valor>0){
         if(seleccion==='ingreso'){
             ingresos.push(new Ingreso(descripcion, valor));
             cargarIngresos();
